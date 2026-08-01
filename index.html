@@ -24,6 +24,11 @@
     <meta name="author" content="Hollow Technologies">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#08050c">
+    <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src 'self'; base-uri 'self'; form-action 'self' https://formspree.io; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'"
+    >
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <!-- Social sharing metadata -->
     <meta
@@ -667,7 +672,12 @@
                         </div>
                     </div>
 
-                    <form class="contact-form" id="contact-form">
+                    <form
+                        class="contact-form"
+                        id="contact-form"
+                        action="https://formspree.io/f/xkodlnlj"
+                        method="post"
+                    >
                         <div class="form-heading">
                             <span>Send a Message</span>
                             <p>Fields marked with an asterisk are required.</p>
@@ -683,7 +693,6 @@
                                     name="name"
                                     placeholder="Your name"
                                     autocomplete="name"
-                                    data-fs-field
                                     required
                                 >
                             </div>
@@ -697,7 +706,6 @@
                                     name="email"
                                     placeholder="you@example.com"
                                     autocomplete="email"
-                                    data-fs-field
                                     required
                                 >
                             </div>
@@ -709,7 +717,6 @@
                             <select
                                 id="contact-subject"
                                 name="subject"
-                                data-fs-field
                                 required
                             >
                                 <option value="">Select a subject</option>
@@ -729,7 +736,6 @@
                                 name="message"
                                 rows="7"
                                 placeholder="Tell us how we can help..."
-                                data-fs-field
                                 required
                             ></textarea>
                         </div>
@@ -737,29 +743,11 @@
                         <button
                             type="submit"
                             class="contact-submit"
-                            data-fs-submit-btn
                         >
                             Send Message
                             <span aria-hidden="true">→</span>
                         </button>
 
-                        <div
-                            class="form-status form-status-success"
-                            data-fs-success
-                            role="status"
-                        >
-                            Your message has been sent successfully. Thank you for
-                            contacting Hollow Technologies.
-                        </div>
-
-                        <div
-                            class="form-status form-status-error"
-                            data-fs-error
-                            role="alert"
-                        >
-                            Your message could not be sent. Please check your details
-                            and try again.
-                        </div>
                     </form>
                 </div>
             </div>
@@ -825,24 +813,6 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        window.formspree =
-            window.formspree ||
-            function () {
-                (formspree.q = formspree.q || []).push(arguments);
-            };
-
-        formspree("initForm", {
-            formElement: "#contact-form",
-            formId: "xkodlnlj"
-        });
-    </script>
-
-    <script
-        src="https://unpkg.com/@formspree/ajax@1"
-        defer
-    ></script>
 
     <script src="script.js"></script>
 </body>

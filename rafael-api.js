@@ -241,6 +241,19 @@
             return result;
         }
 
+        async ready(options = {}) {
+            const result = await this.request("/ready", options);
+            if (
+                result.data.status !== "ready" ||
+                result.data.service !== "rafael-public-api" ||
+                typeof result.data.version !== "string" ||
+                !result.data.version
+            ) {
+                throw new RafaelApiError("malformed", { requestId: result.requestId });
+            }
+            return result;
+        }
+
         async chat(payload, options = {}) {
             const result = await this.request("/chat", {
                 ...options,
@@ -321,7 +334,18 @@
 
         async health(options = {}) {
             await this.wait(options.signal);
-            return { data: { status: "ok", service: "rafael-public-api" }, requestId: null };
+            return {
+                data: { status: "ok", service: "rafael-public-api", version: "mock" },
+                requestId: null
+            };
+        }
+
+        async ready(options = {}) {
+            await this.wait(options.signal);
+            return {
+                data: { status: "ready", service: "rafael-public-api", version: "mock" },
+                requestId: null
+            };
         }
 
         async chat(payload, options = {}) {

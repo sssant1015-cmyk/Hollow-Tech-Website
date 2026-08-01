@@ -29,9 +29,11 @@ wildcard.
 
 ## Frontend configuration
 
-Public, non-secret settings live in `rafael-config.js`. The development API is
-configured as `http://127.0.0.1:8000`. Replace `apiBaseUrl` when a production API
-origin is available. Real API mode is the default and never falls back to mock
+Public, non-secret deployment settings live in `rafael-public-config.js` and are
+validated by `rafael-config.js`. The tracked file is explicitly for loopback
+development. Production settings are generated into `dist/` from the required
+`RAFAEL_API_BASE_URL` build environment variable; do not edit a hosted URL into
+the source file. Real API mode is the default and never falls back to mock
 answers after a failed request.
 
 For frontend-only development, open:
@@ -41,10 +43,9 @@ http://127.0.0.1:5500/rafael.html?mock=1
 ```
 
 Mock replies are visibly identified in the status and response text. Add
-`&dev=1` to expose visual failure-state controls. Mock mode is for local UI work
-only, is restricted to `localhost` and `127.0.0.1`, and uses the same client
-interface as live mode. Set `allowDevelopmentMockQuery` to `false` for a
-production configuration as an additional defense in depth.
+`&dev=1` to expose visual failure-state controls. Mock mode is restricted to a
+development configuration served from `localhost` or `127.0.0.1`. The
+production build disables it and rejects non-HTTPS or loopback API origins.
 
 ## Synchronized public limits
 
@@ -59,7 +60,8 @@ The frontend mirrors these backend constants:
 
 The API timeout is 15 seconds in `web.settings.WebSettings`; the browser timeout
 is deliberately 20 seconds so the API has time to return its sanitized 503
-response first. The initial health check retries once after five seconds. A
+response first. Availability checks require both `/health` and `/ready`, with at
+most three attempts separated by three seconds. A
 browser cooldown honors `Retry-After` up to 60 seconds, matching the API's
 default rate-limit window. Default API policies are 30 chat requests and 10
 feedback requests per 60 seconds.
@@ -78,7 +80,7 @@ feedback requests per 60 seconds.
 
 ## Safe connection test
 
-1. Confirm `/health` changes the page status from **Connecting** to **Ready**.
+1. Confirm `/health` and `/ready` both succeed before the page shows **Ready**.
 2. Send `help`, `version`, `calculate 2 + 2`, and an ordinary question.
 3. Refresh the page and confirm the session indicator remains abbreviated while
    visible messages reset.
@@ -89,8 +91,10 @@ feedback requests per 60 seconds.
 6. Inspect browser storage: it should contain at most
    `rafael_public_beta_session`, never conversation text.
 
-Run the frontend client tests with the bundled or system Node.js runtime:
+Run the complete frontend tests with the bundled or system Node.js runtime:
 
 ```powershell
-node --test tests/rafael-api.test.js
+node --test tests/*.test.js
 ```
+
+Production build and deployment instructions are in `docs/deployment.md`.

@@ -57,13 +57,29 @@ function jsonResponse(body, status = 200, headers = {}) {
     });
 }
 
-function loadConfig(hostname, search = "?mock=1") {
+function loadConfig(
+    hostname,
+    search = "?mock=1",
+    publicConfig = {
+        environment: "development",
+        apiBaseUrl: "http://127.0.0.1:8000",
+        useMockApi: false
+    }
+) {
     const browserWindow = {
-        location: { hostname, search }
+        location: {
+            hostname,
+            search,
+            protocol: hostname === "127.0.0.1" || hostname === "localhost"
+                ? "http:"
+                : "https:"
+        },
+        RAFAEL_PUBLIC_CONFIG: publicConfig
     };
     vm.runInContext(configSource, vm.createContext({
         window: browserWindow,
-        URLSearchParams
+        URLSearchParams,
+        URL
     }), { filename: "rafael-config.js" });
     return browserWindow.RAFAEL_CONFIG;
 }
@@ -242,6 +258,36 @@ test("request timeout is distinct from network failure", async () => {
     );
 });
 
+test("readiness validates the current production contract", async () => {
+    const calls = [];
+    const api = loadApi();
+    const client = api.createClient(config(), {
+        fetchImplementation: async (url) => {
+            calls.push(url);
+            return jsonResponse({
+                status: "ready",
+                service: "rafael-public-api",
+                version: "0.2.0"
+            });
+        }
+    });
+
+    await client.ready();
+    assert.deepEqual(calls, ["http://127.0.0.1:8000/ready"]);
+});
+
+test("malformed readiness responses are rejected", async () => {
+    const api = loadApi();
+    const client = api.createClient(config(), {
+        fetchImplementation: async () => jsonResponse({
+            status: "ready",
+            service: "rafael-public-api"
+        })
+    });
+
+    await assert.rejects(client.ready(), (error) => error.kind === "malformed");
+});
+
 test("network failure does not fall back to mock mode", async () => {
     const api = loadApi();
     const client = api.createClient(config(), {
@@ -289,6 +335,33 @@ test("mock query mode is restricted to loopback development hosts", () => {
     assert.equal(loadConfig("127.0.0.1").mockModeRequested, true);
     assert.equal(loadConfig("localhost").mockModeRequested, true);
     assert.equal(loadConfig("hollow.example").mockModeRequested, false);
+});
+
+test("production configuration accepts only a non-local HTTPS origin", () => {
+    const valid = loadConfig("www.hollow.example", "", {
+        environment: "production",
+        apiBaseUrl: "https://api.hollow.example",
+        useMockApi: true
+    });
+    assert.equal(valid.configurationError, null);
+    assert.equal(valid.apiBaseUrl, "https://api.hollow.example");
+    assert.equal(valid.useMockApi, false);
+    assert.equal(valid.allowDevelopmentMockQuery, false);
+
+    for (const apiBaseUrl of [
+        "http://api.hollow.example",
+        "https://localhost:8000",
+        "https://api.hollow.example/path"
+    ]) {
+        const invalid = loadConfig("www.hollow.example", "?mock=1", {
+            environment: "production",
+            apiBaseUrl,
+            useMockApi: true
+        });
+        assert.match(invalid.configurationError, /Rafael API/);
+        assert.equal(invalid.apiBaseUrl, "");
+        assert.equal(invalid.mockModeRequested, false);
+    }
 });
 
 test("UI source uses safe rendering and stores no conversation history", () => {

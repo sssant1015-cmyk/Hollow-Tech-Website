@@ -15,7 +15,10 @@
             return;
         }
 
-        const apiClient = apiFactory.createClient(config);
+        const configurationAvailable = !config.configurationError;
+        const apiClient = configurationAvailable
+            ? apiFactory.createClient(config)
+            : null;
         const mockModeEnabled = config.useMockApi || (
             config.allowDevelopmentMockQuery && config.mockModeRequested
         );
@@ -142,11 +145,15 @@
 
         function updateChatControls() {
             const rateLimited = Date.now() < rateLimitUntil;
-            sendButton.disabled = chatPending || healthChecking || rateLimited;
+            const serviceUnavailable = !configurationAvailable || !healthAvailable;
+            sendButton.disabled =
+                chatPending || healthChecking || rateLimited || serviceUnavailable;
             clearButton.disabled = clearPending;
             commandButtons.forEach((button) => {
-                button.disabled = chatPending || healthChecking || rateLimited;
+                button.disabled =
+                    chatPending || healthChecking || rateLimited || serviceUnavailable;
             });
+            feedbackSubmit.disabled = feedbackPending || serviceUnavailable;
         }
 
         function showChatError(message) {
@@ -266,6 +273,11 @@
             }
             if (error.kind === "session") {
                 removeTemporarySessionId();
+                resetConversation();
+                appendMessage(
+                    "Rafael",
+                    "The previous temporary session ended. A new conversation can begin when you send again."
+                );
             }
             if (error.kind === "rateLimit") {
                 beginRateLimit(error.retryAfterSeconds);
@@ -380,7 +392,7 @@
             updateChatControls();
 
             try {
-                if (sessionToClear) {
+                if (sessionToClear && apiClient) {
                     await apiClient.clearSession(sessionToClear);
                 }
                 setConnectionState(
@@ -498,6 +510,7 @@
                     error.kind === "session"
                 ) {
                     removeTemporarySessionId();
+                    resetConversation();
                 }
                 const safeMessage = error instanceof apiFactory.RafaelApiError
                     ? messageWithReference(error)
@@ -505,19 +518,23 @@
                 setFeedbackStatus(safeMessage, "error");
             } finally {
                 feedbackPending = false;
-                feedbackSubmit.disabled = false;
+                updateChatControls();
             }
         }
 
-        async function checkHealth(allowRetry = true) {
+        async function checkAvailability(attempt = 1) {
             if (chatPending || clearPending) {
                 return;
             }
             healthChecking = true;
             setConnectionState("connecting", "Connecting");
             updateChatControls();
+            let processIsAlive = false;
             try {
                 await apiClient.health();
+                processIsAlive = true;
+                setConnectionState("connecting", "Starting");
+                await apiClient.ready();
                 healthAvailable = true;
                 setConnectionState(
                     "ready",
@@ -525,10 +542,13 @@
                 );
             } catch {
                 healthAvailable = false;
-                setConnectionState("error", "Rafael unavailable");
-                if (allowRetry) {
+                setConnectionState(
+                    processIsAlive ? "connecting" : "error",
+                    processIsAlive ? "Rafael is starting" : "Rafael unavailable"
+                );
+                if (attempt < config.healthMaxAttempts) {
                     window.setTimeout(() => {
-                        void checkHealth(false);
+                        void checkAvailability(attempt + 1);
                     }, config.healthRetryDelayMs);
                 }
             } finally {
@@ -603,6 +623,16 @@
         updateContactPermission();
         updateChatControls();
 
+        if (!configurationAvailable) {
+            healthChecking = false;
+            setConnectionState("error", "Configuration required");
+            showChatError(
+                "Rafael is not configured for this deployment. Please try again later."
+            );
+            updateChatControls();
+            return;
+        }
+
         const developmentModeEnabled =
             new URLSearchParams(window.location.search).get("dev") === "1";
         if (developmentModeEnabled && devTools) {
@@ -619,7 +649,7 @@
             });
         }
 
-        void checkHealth();
+        void checkAvailability();
     }
 
     if (document.readyState === "loading") {
