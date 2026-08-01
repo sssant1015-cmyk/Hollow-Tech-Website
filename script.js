@@ -1,63 +1,44 @@
-/* =========================
-   MOBILE NAVIGATION
-========================= */
+document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const navigationLinks = document.querySelectorAll(".nav-links a");
 
-const menuToggle = document.getElementById("menu-toggle");
-const navLinks = document.getElementById("nav-links");
-const navigationLinks = document.querySelectorAll(".nav-links a");
-
-function closeMobileMenu() {
     if (!menuToggle || !navLinks) {
+        console.error("Mobile navigation elements were not found.");
         return;
     }
 
-    menuToggle.classList.remove("active");
-    navLinks.classList.remove("active");
-    menuToggle.setAttribute("aria-expanded", "false");
-    menuToggle.setAttribute("aria-label", "Open navigation menu");
-}
+    function closeMenu() {
+        menuToggle.classList.remove("active");
+        navLinks.classList.remove("active");
+        menuToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("menu-open");
+    }
 
-if (menuToggle && navLinks) {
     menuToggle.addEventListener("click", () => {
-        const menuIsOpening =
-            !navLinks.classList.contains("active");
+        const menuIsOpen = navLinks.classList.toggle("active");
 
-        menuToggle.classList.toggle("active", menuIsOpening);
-        navLinks.classList.toggle("active", menuIsOpening);
-
-        menuToggle.setAttribute(
-            "aria-expanded",
-            String(menuIsOpening)
-        );
-
-        menuToggle.setAttribute(
-            "aria-label",
-            menuIsOpening
-                ? "Close navigation menu"
-                : "Open navigation menu"
-        );
+        menuToggle.classList.toggle("active", menuIsOpen);
+        menuToggle.setAttribute("aria-expanded", String(menuIsOpen));
+        document.body.classList.toggle("menu-open", menuIsOpen);
     });
 
     navigationLinks.forEach((link) => {
-        link.addEventListener("click", closeMobileMenu);
+        link.addEventListener("click", closeMenu);
     });
 
     document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
-            closeMobileMenu();
-            menuToggle.focus();
+            closeMenu();
         }
     });
 
-    document.addEventListener("click", (event) => {
-        const clickedInsideMenu = navLinks.contains(event.target);
-        const clickedMenuButton = menuToggle.contains(event.target);
-
-        if (!clickedInsideMenu && !clickedMenuButton) {
-            closeMobileMenu();
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 900) {
+            closeMenu();
         }
     });
-}
+});
 
 const currentYear = document.getElementById("current-year");
 
