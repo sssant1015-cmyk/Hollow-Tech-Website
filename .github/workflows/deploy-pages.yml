@@ -28,9 +28,6 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Build production site
         env:
           RAFAEL_API_BASE_URL: https://rafaelreboot-production.up.railway.app
