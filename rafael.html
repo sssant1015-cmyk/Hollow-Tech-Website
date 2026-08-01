@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Try Rafael, Hollow Technologies' intelligent assistant, in an early public beta with temporary chat sessions."
+    >
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#08050c">
+
+    <title>Rafael Public Beta | Hollow Technologies</title>
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="rafael.css">
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">Skip to Rafael</a>
+
+    <header class="beta-header">
+        <nav class="beta-nav" aria-label="Rafael beta navigation">
+            <a class="beta-brand" href="index.html" aria-label="Hollow Technologies home">
+                <span class="beta-brand-symbol" aria-hidden="true">H</span>
+                <span>
+                    <strong>Hollow Technologies</strong>
+                    <small>Building Intelligence Beyond Limits</small>
+                </span>
+            </a>
+
+            <div class="beta-nav-actions">
+                <span class="beta-nav-status">
+                    <span aria-hidden="true"></span>
+                    Public Beta
+                </span>
+                <a class="back-link" href="index.html">Back to website</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <section class="beta-hero" aria-labelledby="rafael-title">
+            <div class="beta-container beta-hero-grid">
+                <div class="beta-hero-content">
+                    <p class="eyebrow">Hollow Technologies presents</p>
+                    <div class="beta-label-row">
+                        <span class="public-beta-label">Public Beta</span>
+                        <span class="temporary-label">Temporary sessions</span>
+                    </div>
+
+                    <h1 id="rafael-title">Meet <span>Rafael.</span></h1>
+
+                    <p class="beta-lede">
+                        Rafael is Hollow Tech's intelligent assistant. This early public
+                        beta can chat, answer general questions, perform simple
+                        calculations, show help, and display version information.
+                    </p>
+
+                    <p class="beta-caution">
+                        Conversations are temporary. Do not submit confidential or
+                        sensitive information.
+                    </p>
+
+                    <div class="beta-actions">
+                        <a class="primary-action" href="#chat">Start a conversation</a>
+                        <a class="secondary-action" href="#feedback">Share feedback</a>
+                    </div>
+
+                    <ul class="capability-list" aria-label="Current Rafael beta capabilities">
+                        <li>General questions</li>
+                        <li>Simple calculations</li>
+                        <li>Help and version commands</li>
+                    </ul>
+                </div>
+
+                <div class="dragon-sigil" aria-hidden="true">
+                    <span class="dragon-wing dragon-wing-left"></span>
+                    <span class="dragon-wing dragon-wing-right"></span>
+                    <div class="sigil-rings">
+                        <span>R</span>
+                        <small>RAFAEL</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="chat-section" id="chat" aria-labelledby="chat-title">
+            <div class="beta-container chat-layout">
+                <article class="chat-panel">
+                    <header class="chat-header">
+                        <div class="chat-identity">
+                            <span class="rafael-avatar" aria-hidden="true">R</span>
+                            <div>
+                                <h2 id="chat-title">Rafael</h2>
+                                <p>Hollow Tech intelligent assistant</p>
+                            </div>
+                        </div>
+
+                        <div class="chat-header-meta">
+                            <div
+                                class="connection-status"
+                                id="connection-status"
+                                data-state="connecting"
+                                role="status"
+                                aria-live="polite"
+                            >
+                                <span class="status-light" aria-hidden="true"></span>
+                                <span id="connection-status-text">Connecting</span>
+                            </div>
+
+                            <span class="session-indicator" title="Messages are not saved">
+                                Temporary session
+                            </span>
+                        </div>
+                    </header>
+
+                    <div
+                        class="chat-log"
+                        id="chat-log"
+                        role="log"
+                        aria-live="polite"
+                        aria-relevant="additions"
+                        aria-label="Conversation with Rafael"
+                        tabindex="0"
+                    >
+                        <article class="message message-rafael">
+                            <span class="message-author">Rafael</span>
+                            <p>
+                                Welcome. I'm Rafael, Hollow Tech's intelligent assistant.
+                                This public beta supports general questions, calculations,
+                                help, and version information.
+                            </p>
+                        </article>
+                    </div>
+
+                    <div class="typing-indicator" id="typing-indicator" role="status" hidden>
+                        <span class="visually-hidden">Rafael is typing</span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </div>
+
+                    <p class="chat-error" id="chat-error" role="alert" aria-live="assertive" hidden></p>
+
+                    <form class="chat-composer" id="chat-form" novalidate>
+                        <label for="message-input">Message Rafael</label>
+                        <textarea
+                            id="message-input"
+                            name="message"
+                            rows="3"
+                            maxlength="2048"
+                            placeholder="Ask a question or try ‘calculate 2 + 2’"
+                            aria-describedby="composer-help character-counter chat-error"
+                            required
+                        ></textarea>
+
+                        <div class="composer-footer">
+                            <div class="composer-guidance">
+                                <span id="composer-help">Enter to send · Shift+Enter for a new line</span>
+                                <span id="character-counter" aria-live="polite">0 / 2048</span>
+                            </div>
+
+                            <div class="composer-actions">
+                                <button class="clear-button" id="clear-chat" type="button">
+                                    Clear chat
+                                </button>
+                                <button class="send-button" id="send-message" type="submit">
+                                    <span>Send</span>
+                                    <span aria-hidden="true">→</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </article>
+
+                <aside class="beta-sidebar" aria-label="Rafael beta information">
+                    <section class="info-card session-card" aria-labelledby="session-title">
+                        <p class="card-kicker">Session</p>
+                        <h2 id="session-title">Private by restraint</h2>
+                        <p>
+                            Only an opaque temporary session identifier is kept in this
+                            browser tab. Conversation messages are not stored locally.
+                        </p>
+                        <span class="session-value" id="session-display">Preparing session…</span>
+                    </section>
+
+                    <section class="info-card safety-card" aria-labelledby="safety-title">
+                        <p class="card-kicker">Safety &amp; privacy</p>
+                        <h2 id="safety-title">Use Rafael thoughtfully</h2>
+                        <ul>
+                            <li>Rafael is in beta and may make mistakes.</li>
+                            <li>Do not share passwords, financial credentials, medical records, or confidential information.</li>
+                            <li>Rafael is not for emergencies.</li>
+                            <li>Responses are not professional medical, legal, or financial advice.</li>
+                        </ul>
+                    </section>
+
+                    <section class="info-card command-card" aria-labelledby="commands-title">
+                        <p class="card-kicker">Try a command</p>
+                        <h2 id="commands-title">Explore the mock beta</h2>
+                        <div class="command-list">
+                            <button type="button" data-prompt="help">help</button>
+                            <button type="button" data-prompt="version">version</button>
+                            <button type="button" data-prompt="calculate 2 + 2">calculate 2 + 2</button>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        </section>
+
+        <section class="feedback-section" id="feedback" aria-labelledby="feedback-title">
+            <div class="beta-container feedback-grid">
+                <div class="feedback-intro">
+                    <p class="eyebrow">Shape the public beta</p>
+                    <h2 id="feedback-title">Help Rafael improve.</h2>
+                    <p>
+                        Report an issue or share an idea. During this frontend phase,
+                        feedback is validated locally but is not sent or retained.
+                    </p>
+                </div>
+
+                <form class="feedback-form" id="feedback-form" novalidate>
+                    <div class="field-group">
+                        <label for="feedback-category">Category</label>
+                        <select id="feedback-category" name="category" required>
+                            <option value="">Choose a category</option>
+                            <option value="bug">Bug</option>
+                            <option value="incorrect_answer">Incorrect answer</option>
+                            <option value="slow_response">Slow response</option>
+                            <option value="usability">Usability</option>
+                            <option value="feature_request">Feature request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="feedback-message">Feedback</label>
+                        <textarea
+                            id="feedback-message"
+                            name="feedback"
+                            rows="6"
+                            maxlength="2000"
+                            placeholder="Tell us what happened or what would make Rafael better."
+                            aria-describedby="feedback-counter"
+                            required
+                        ></textarea>
+                        <span class="field-counter" id="feedback-counter">0 / 2000</span>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="feedback-rating">Rating <span>(optional)</span></label>
+                        <select id="feedback-rating" name="rating">
+                            <option value="">No rating</option>
+                            <option value="5">5 — Excellent</option>
+                            <option value="4">4 — Good</option>
+                            <option value="3">3 — Fair</option>
+                            <option value="2">2 — Poor</option>
+                            <option value="1">1 — Very poor</option>
+                        </select>
+                    </div>
+
+                    <label class="permission-field" for="contact-permission">
+                        <input id="contact-permission" name="contact_permission" type="checkbox">
+                        <span>Hollow Technologies may contact me about this feedback.</span>
+                    </label>
+
+                    <div class="field-group" id="feedback-contact-group" hidden>
+                        <label for="feedback-contact">Contact detail <span>(optional)</span></label>
+                        <input
+                            id="feedback-contact"
+                            name="contact"
+                            type="text"
+                            maxlength="254"
+                            autocomplete="email"
+                            placeholder="Email or preferred contact detail"
+                            disabled
+                        >
+                    </div>
+
+                    <button class="feedback-submit" id="feedback-submit" type="submit">
+                        Submit feedback
+                    </button>
+
+                    <p class="feedback-status" id="feedback-status" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </section>
+
+        <section class="beta-notice" aria-labelledby="notice-title">
+            <div class="beta-container beta-notice-inner">
+                <div>
+                    <p class="card-kicker">Early access notice</p>
+                    <h2 id="notice-title">A focused preview—not a finished product.</h2>
+                </div>
+                <p>
+                    This interface currently uses development-only mock replies. It is
+                    not connected to Rafael's live API, private systems, or external AI
+                    providers.
+                </p>
+            </div>
+        </section>
+
+        <section class="dev-tools" id="dev-tools" aria-labelledby="dev-tools-title" hidden>
+            <div class="beta-container">
+                <h2 id="dev-tools-title">Development state preview</h2>
+                <p>These controls are available only when this page is opened with <code>?dev=1</code>.</p>
+                <div class="dev-tool-actions">
+                    <button type="button" data-mock-state="network">Network failure</button>
+                    <button type="button" data-mock-state="rate-limit">Rate limit</button>
+                    <button type="button" data-mock-state="provider">Provider unavailable</button>
+                    <button type="button" data-mock-state="session-expired">Session expired</button>
+                    <button type="button" data-mock-state="ready">Ready</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="beta-footer">
+        <div class="beta-container beta-footer-inner">
+            <p>© <span id="current-year"></span> Hollow Technologies.</p>
+            <a href="index.html">Return to Hollow Technologies</a>
+        </div>
+    </footer>
+
+    <noscript>
+        <div class="noscript-notice">
+            Rafael's chat requires JavaScript. You can still return to the
+            <a href="index.html">Hollow Technologies website</a>.
+        </div>
+    </noscript>
+
+    <script src="rafael-chat.js"></script>
+</body>
+
+</html>
