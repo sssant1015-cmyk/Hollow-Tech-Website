@@ -183,7 +183,7 @@
                             Only an opaque temporary session identifier is kept in this
                             browser tab. Conversation messages are not stored locally.
                         </p>
-                        <span class="session-value" id="session-display">Preparing session…</span>
+                        <span class="session-value" id="session-display">No server session yet</span>
                     </section>
 
                     <section class="info-card safety-card" aria-labelledby="safety-title">
@@ -199,7 +199,7 @@
 
                     <section class="info-card command-card" aria-labelledby="commands-title">
                         <p class="card-kicker">Try a command</p>
-                        <h2 id="commands-title">Explore the mock beta</h2>
+                        <h2 id="commands-title">Explore Rafael</h2>
                         <div class="command-list">
                             <button type="button" data-prompt="help">help</button>
                             <button type="button" data-prompt="version">version</button>
@@ -216,8 +216,9 @@
                     <p class="eyebrow">Shape the public beta</p>
                     <h2 id="feedback-title">Help Rafael improve.</h2>
                     <p>
-                        Report an issue or share an idea. During this frontend phase,
-                        feedback is validated locally but is not sent or retained.
+                        Report an issue or share an idea. Feedback is sent only with
+                        the fields shown here and is retained in the beta's bounded,
+                        in-memory feedback store.
                     </p>
                 </div>
 
@@ -295,9 +296,10 @@
                     <h2 id="notice-title">A focused preview—not a finished product.</h2>
                 </div>
                 <p>
-                    This interface currently uses development-only mock replies. It is
-                    not connected to Rafael's live API, private systems, or external AI
-                    providers.
+                    This interface connects only to Rafael's restricted public API.
+                    Sessions and feedback are held in bounded server memory and may be
+                    lost whenever the beta service restarts. Private systems remain
+                    outside the public interface.
                 </p>
             </div>
         </section>
@@ -305,7 +307,10 @@
         <section class="dev-tools" id="dev-tools" aria-labelledby="dev-tools-title" hidden>
             <div class="beta-container">
                 <h2 id="dev-tools-title">Development state preview</h2>
-                <p>These controls are available only when this page is opened with <code>?dev=1</code>.</p>
+                <p>
+                    These controls are available only with <code>?dev=1</code>.
+                    Add <code>&amp;mock=1</code> to use the visibly identified local mock adapter.
+                </p>
                 <div class="dev-tool-actions">
                     <button type="button" data-mock-state="network">Network failure</button>
                     <button type="button" data-mock-state="rate-limit">Rate limit</button>
@@ -331,6 +336,8 @@
         </div>
     </noscript>
 
+    <script src="rafael-config.js"></script>
+    <script src="rafael-api.js"></script>
     <script src="rafael-chat.js"></script>
 </body>
 
